@@ -2,7 +2,7 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+Hi! Welcome to my blog, this is where I'll be posting about projects I'm working on, as well as my personal thoughts and other random musings.
 
 [Link to another page](./another-page.html).
 
