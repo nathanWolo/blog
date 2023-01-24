@@ -25,6 +25,8 @@ I have a pretty broad range of interests I'm likely to post about, and if you're
 
 # Active Projects
 
-* <a href= "https://github.com/nathanWolo/pz-battlesnake">pz-battlesnake </a>
-<ul> pz-battlesnake is a multi-agent reinforcement learning environment for the real time strategy game Battlesnake.
-It is being used by UVic AI for our current club project. </ul>
+*   <a href= "https://github.com/nathanWolo/pz-battlesnake">pz-battlesnake </a>
+    <ul>
+      <li>pz-battlesnake is a multi-agent reinforcement learning environment for the real time strategy game Battlesnake.
+It is being used by UVic AI for our current club project.</li>
+    </ul>
