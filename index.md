@@ -12,7 +12,7 @@ I have a pretty broad range of interests I'm likely to post about, and if you're
 *       Though I don't play as much anymore, I was once ranked in the top 50 worldwide in Hearthstone's online ladder
 *   Bouldering
 *   Scifi / Futurism
-*      Specifically how we might see a technological singularity in our lifetimes
+* * Specifically how we might see a technological singularity in our lifetimes
 *   Nuclear power
 *   YIMBYism
 *   Electoral politics
