@@ -5,9 +5,12 @@ layout: default
 Hi! Welcome to my blog, this is where I'll be posting about projects I'm working on, as well as my personal thoughts and other random musings.
 Lately my focus is mostly on deep learning, where I like to work on independent projects as well as collaborations with UVic AI.
 
-[Link to another page](./another-page.html).
+<!-- [Link to another page](./another-page.html). -->
 
-There should be whitespace between paragraphs.
+I have a pretty broad range of interests I'm likely to post about, and if you're interested in any of these feel free to hit me up to talk about them.
+*   Card games (specifically *Hearthstone* and *Dominion*)
+*   Bouldering
+*   Scifi / Futurism
 
 There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
 
