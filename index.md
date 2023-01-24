@@ -3,6 +3,7 @@ layout: default
 ---
 
 Hi! Welcome to my blog, this is where I'll be posting about projects I'm working on, as well as my personal thoughts and other random musings.
+Lately my focus is mostly on deep learning, where I like to work on independent projects as well as collaborations with UVic AI.
 
 [Link to another page](./another-page.html).
 
