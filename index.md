@@ -9,10 +9,10 @@ Lately my focus is mostly on deep learning, where I like to work on independent 
 
 I have a pretty broad range of interests I'm likely to post about, and if you're interested in any of these feel free to hit me up to talk about them.
 *   Card games (specifically *Hearthstone* and *Dominion*)
-<DD> Though I don't play as much anymore, I was once ranked in the top 50 worldwide in Hearthstone's online ladder
+*       Though I don't play as much anymore, I was once ranked in the top 50 worldwide in Hearthstone's online ladder
 *   Bouldering
 *   Scifi / Futurism
-<DD> Specifically how we might see a technological singularity in our lifetimes
+*      Specifically how we might see a technological singularity in our lifetimes
 *   Nuclear power
 *   YIMBYism
 *   Electoral politics
