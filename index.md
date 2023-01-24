@@ -21,8 +21,7 @@ I have a pretty broad range of interests I'm likely to post about, and if you're
 *   YIMBYism
 *   Electoral politics
 *   Applied math
-
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+*   Reinforcement learning
 
 # Active Projects
 
