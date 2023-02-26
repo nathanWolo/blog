@@ -8,11 +8,12 @@ Lately my focus is mostly on deep learning, where I like to work on independent 
 <!-- [Link to another page](./another-page.html). -->
 
 I have a pretty broad range of interests I'm likely to post about, and if you're interested in any of these feel free to hit me up to talk about them.
-Feel free to contact me on <a href="https://twitter.com/weaponofkill">twitter </a> or by email ( nathan{lastname}@uvic.ca )
+Feel free to contact me by email ( nathan{lastname}@uvic.ca )
 *   Card games (specifically *Hearthstone* and *Dominion*)
     <ul>
       <li>Though I don’t play as much anymore, I was once ranked in the top 50 worldwide in Hearthstone’s online ladder</li>
     </ul>
+*   Philosophy of Math / Computer Science / Physics
 *   Bouldering
 *   Scifi / Futurism
     <ul>
