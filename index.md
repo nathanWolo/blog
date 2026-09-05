@@ -2,33 +2,48 @@
 layout: default
 ---
 
-Hi! Welcome to my blog, this is where I'll be posting about projects I'm working on, as well as my personal thoughts and other random musings.
-Lately my focus is mostly on deep learning, where I like to work on independent projects as well as collaborations with UVic AI.
+Hi, I'm Nathan. I'm a software engineer at Amazon, working full-stack on tools
+for Amazon sellers. Before that I was a data scientist at Canfor, building
+forecasting models and a logistics optimizer that reroutes tens of thousands of
+tons of lumber a week. I studied math and computer science at the University of
+Victoria (2024).
 
-<!-- [Link to another page](./another-page.html). -->
+Outside of work I mostly build game-playing engines and the testing
+infrastructure that makes them measurably stronger &mdash; perft baselines, unit
+tests, and SPRT self-play matches to prove each change is actually an
+improvement. This site is where I write about that.
 
-I have a pretty broad range of interests I'm likely to post about, and if you're interested in any of these feel free to hit me up to talk about them.
-Feel free to contact me by email ( nathan{lastname}@uvic.ca )
-*   Card games (specifically *Hearthstone* and *Dominion*)
-    <ul>
-      <li>Though I don’t play as much anymore, I was once ranked in the top 50 worldwide in Hearthstone’s online ladder</li>
-    </ul>
-*   Philosophy of Math / Computer Science / Physics
-*   Bouldering
-*   Scifi / Futurism
-    <ul>
-      <li>Specifically how we might see a technological singularity in our lifetimes</li>
-    </ul>
-*   Nuclear power
-*   YIMBYism
-*   Electoral politics
-*   Applied math
-*   Reinforcement learning
+Feel free to reach out by email (nathanwoloshyn@gmail.com) about any of it.
 
-# Active Projects
+# Highlights
 
-*   <a href= "https://github.com/nathanWolo/pz-battlesnake">pz-battlesnake </a>
-    <ul>
-      <li>pz-battlesnake is a multi-agent reinforcement learning environment for the real time strategy game Battlesnake.
-It is being used by UVic AI for our current club project.</li>
-    </ul>
+*   <a href="https://github.com/nathanWolo/crossfish">crossfish</a> &mdash; a
+    C++ engine for Ultimate Tic-Tac-Toe with an NNUE evaluation. It took 1st
+    place in the UVic AI UTTT tournament, and a snapshot reached Legend tier on
+    CodinGame.
+*   <a href="https://github.com/nathanWolo/slinky-chess">slinky-chess</a>,
+    <a href="https://github.com/nathanWolo/slinkydotcpp">slinkydotcpp</a>, and
+    friends &mdash; a series of small, didactic engines (chess in Rust,
+    Battlesnake in C++/Rust) written to learn how strong game AI actually works.
+*   <a href="https://github.com/nathanWolo/poker_hands">Rush Tracker</a> &mdash;
+    a local-only poker analysis tool for GGPoker cash games: Flask + SQLite, full
+    HUD stats, a hand replayer, and TexasSolver integration for comparing your
+    lines to GTO.
+*   <b>Research</b> &mdash; Monte Carlo Tree Search and reinforcement learning for
+    a four-player, simultaneous-move game. Presented and published at the
+    Canadian Undergraduate Conference in AI, where it won the "Most Innovative
+    Paper" award.
+*   <b>TinyChess competition</b> &mdash; placed 14th of 636 entries worldwide
+    with a small but strong C# chess engine combining search and reinforcement
+    learning.
+
+# Interests
+
+Things I'm likely to write about, and always happy to talk about:
+
+*   Reinforcement learning and game-playing agents
+*   Applied math &mdash; optimization, numerical analysis
+*   Philosophy of math, CS, and physics
+*   Card games (*Dominion*, and once upon a time top-50 *Hearthstone* ladder)
+*   Bouldering and racket sports
+*   Nuclear power, housing policy, and electoral systems
