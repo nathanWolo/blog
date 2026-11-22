@@ -18,9 +18,10 @@ export CARGO_TARGET_DIR=/some/dir/outside/the/synced/site   # keep build output 
 cargo test --release   # native tests, with the weights in assets/wasm/slinky-weights/ (skips if absent)
 ```
 
-Needs `rustup target add wasm32-wasip1`. `build.sh` uses `-C target-feature=+simd128` and links
-wasi-libc's `crt1-reactor.o` (from the target's `self-contained/` dir). Without that object,
-rustc builds a cdylib that exports no `_initialize` at all.
+Needs `rustup target add wasm32-wasip1`. `build.sh` uses `-C target-feature=+simd128` and makes sure
+wasi-libc's `crt1-reactor.o` (from the target's `self-contained/` dir) is linked in. Without that
+object a cdylib exports no `_initialize` at all. Rust 1.97 leaves it out unless it is named;
+Rust 1.100 links it by itself, and `build.sh` copes with both.
 
 The page loads `assets/wasm/slinky.wasm`, `assets/wasm/slinky-weights/config.json` and
 `params.npz` (the weights are passed in as bytes; nothing reads a file).

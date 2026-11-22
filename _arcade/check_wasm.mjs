@@ -34,7 +34,12 @@ async function load(name) {
   const path = `assets/wasm/${name}.wasm`;
   // The loader gives an import it does not know a stub that fails when called. Here it fails now.
   const supplied = Object.keys(wasiFunctions(() => null));
-  for (const item of WebAssembly.Module.imports(await WebAssembly.compile(file(path)))) {
+  const module = await WebAssembly.compile(file(path));
+  // Every engine here is a WASI reactor: the loader calls `_initialize` once if it is there, and a
+  // build without it would skip the C library's start-up without a word.
+  check(WebAssembly.Module.exports(module).some((item) => item.kind === 'function' && item.name === '_initialize'),
+    `${path} does not export _initialize`);
+  for (const item of WebAssembly.Module.imports(module)) {
     const known = item.kind === 'function' && (
       (item.module === 'wasi_snapshot_preview1' && supplied.includes(item.name)) ||
       (item.module === 'env' && ['now_ms', 'emscripten_notify_memory_growth'].includes(item.name)));

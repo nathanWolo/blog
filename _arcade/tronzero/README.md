@@ -20,8 +20,9 @@ fails if upstream changes shape. The substitutions gate the AVX2/FMA kernels and
 `cfg(target_arch = "x86_64")` (the scalar path is used elsewhere, e.g. WebAssembly) and drop the
 CodinGame stdin loop from `play.rs`. On x86_64 the code behaves exactly like upstream.
 
-`build.sh` targets `wasm32-wasip1` with `+simd128` and links Rust's `crt1-reactor.o`, which is what
-makes the module export `_initialize`. The page must call `_initialize` once, before anything else, and
+`build.sh` targets `wasm32-wasip1` with `+simd128` and makes sure Rust's `crt1-reactor.o` is linked
+in, which is what makes the module export `_initialize` (Rust 1.97 needs it named, Rust 1.100 links
+it by itself; `build.sh` copes with both). The page must call `_initialize` once, before anything else, and
 supply the `wasi_snapshot_preview1` imports: `environ_get`, `environ_sizes_get`, `clock_time_get`,
 `fd_write`, `proc_exit`.
 
