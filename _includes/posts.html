@@ -1,0 +1,13 @@
+{%- comment -%}
+  The list of posts for the home page. It prints nothing until _posts/ has at
+  least one post in it. Kept free of blank lines and indentation because it is
+  included from a Markdown file.
+{%- endcomment -%}
+{%- if site.posts.size > 0 -%}
+<h2 id="writing">Writing</h2>
+<ul class="post-list">
+{%- for post in site.posts -%}
+<li><time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: '%Y-%m-%d' }}</time><span><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>{% if post.description %}<span class="post-desc">{{ post.description | escape }}</span>{% endif %}</span></li>
+{%- endfor -%}
+</ul>
+{%- endif -%}

@@ -1,0 +1,732 @@
+/*
+ * Site stylesheet. Plain CSS, no build step.
+ *
+ * Contents:
+ *   1. Tokens (colours for light and dark)
+ *   2. Base and page frame
+ *   3. Home masthead (the arena) and the top bar on other pages
+ *   4. Prose: text, links, lists, headings
+ *   5. Home page sections: entry lists for projects and posts
+ *   6. Post pages: header, code, quotes, tables, footnotes
+ *   7. Link previews, theme toggle, footer
+ */
+
+/* 1. Tokens ---------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+  --paper: #faf8f2;
+  --ink: #1c1b18;
+  --ink-soft: #4a463e;
+  --muted: #6e6a5f;
+  --rule: #dcd7ca;
+  --tint: #f1ede3;
+  --red: #b9412c;
+  --blue: #2a5c9a;
+  --shadow: 0 10px 30px rgba(45, 38, 22, 0.16);
+  --icon-wiki: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='8' y='13.5' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='15' font-weight='bold' fill='%236e6a5f'%3EW%3C/text%3E%3C/svg%3E");
+  --icon-repo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236e6a5f' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='4.5' cy='3.5' r='2'/%3E%3Ccircle cx='4.5' cy='12.5' r='2'/%3E%3Ccircle cx='11.5' cy='5.5' r='2'/%3E%3Cpath d='M4.5 5.5v5M11.5 7.5c0 2.6-3.2 2.4-7 3'/%3E%3C/svg%3E");
+}
+
+/* The dark tokens appear twice: once for visitors whose system is dark and who
+   have not chosen a theme, once for visitors who picked dark with the toggle. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #161512;
+    --ink: #e8e3d6;
+    --ink-soft: #c5bfb1;
+    --muted: #9a9486;
+    --rule: #38352d;
+    --tint: #201f1a;
+    --red: #e2725b;
+    --blue: #7aaee6;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --icon-wiki: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='8' y='13.5' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='15' font-weight='bold' fill='%239a9486'%3EW%3C/text%3E%3C/svg%3E");
+    --icon-repo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239a9486' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='4.5' cy='3.5' r='2'/%3E%3Ccircle cx='4.5' cy='12.5' r='2'/%3E%3Ccircle cx='11.5' cy='5.5' r='2'/%3E%3Cpath d='M4.5 5.5v5M11.5 7.5c0 2.6-3.2 2.4-7 3'/%3E%3C/svg%3E");
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #161512;
+  --ink: #e8e3d6;
+  --ink-soft: #c5bfb1;
+  --muted: #9a9486;
+  --rule: #38352d;
+  --tint: #201f1a;
+  --red: #e2725b;
+  --blue: #7aaee6;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --icon-wiki: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='8' y='13.5' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='15' font-weight='bold' fill='%239a9486'%3EW%3C/text%3E%3C/svg%3E");
+  --icon-repo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239a9486' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='4.5' cy='3.5' r='2'/%3E%3Ccircle cx='4.5' cy='12.5' r='2'/%3E%3Ccircle cx='11.5' cy='5.5' r='2'/%3E%3Cpath d='M4.5 5.5v5M11.5 7.5c0 2.6-3.2 2.4-7 3'/%3E%3C/svg%3E");
+}
+
+/* 2. Base and page frame --------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: clamp(1.0625rem, 0.98rem + 0.42vw, 1.25rem);
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--blue) 28%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 36em;
+  margin: 0 auto;
+  padding: 4rem 1.25rem 0;
+}
+
+/* Small tracked capitals, used for navigation, dates and captions. */
+.site-nav,
+.arena-caption,
+.post-list time,
+.post-meta,
+.preview-source {
+  font-size: 0.68em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* 3. Masthead -------------------------------------------------------------- */
+
+/* The arena is a canvas with the name plate sitting in the middle of it.
+   assets/js/duel.js plays a game around the plate; without JavaScript the
+   plate is simply a centred title. */
+.arena {
+  position: relative;
+  height: 13.5rem;
+}
+
+.arena-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.plate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.55rem 1.5rem 0.8rem;
+  background: var(--paper);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.site-name {
+  margin: 0;
+  font-size: clamp(1.8rem, 1.25rem + 2.9vw, 2.7rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.018em;
+}
+
+.site-name a,
+a.site-name {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  color: var(--muted);
+}
+
+.plate .site-nav {
+  margin-top: 0.4rem;
+}
+
+.site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.3em;
+}
+
+.arena-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 1.6em;
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+}
+
+.arena-caption[hidden] {
+  display: none;
+}
+
+.arena-caption .is-red {
+  color: var(--red);
+}
+
+.arena-caption .is-blue {
+  color: var(--blue);
+}
+
+.arena-replay {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.arena-replay:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.3em;
+}
+
+.arena-replay[hidden] {
+  display: none;
+}
+
+/* Top bar on every page except the home page. */
+.topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.topbar .site-name {
+  font-size: 1.2em;
+  letter-spacing: -0.01em;
+}
+
+/* 4. Prose ----------------------------------------------------------------- */
+
+.prose {
+  margin-top: 2.6rem;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose p {
+  margin: 0 0 1.1em;
+  text-wrap: pretty;
+}
+
+.prose a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 0.09em;
+}
+
+/* Small marks after links that say where they go. They are drawn as a
+   background in the link's right padding, so a mark never wraps onto a line
+   of its own. */
+.prose a[href*="wikipedia.org/"],
+.prose a[href^="https://github.com/"] {
+  padding-right: 0.7em;
+  background-repeat: no-repeat;
+  background-size: 0.54em 0.54em;
+  background-position: right 0.04em top 0.2em;
+}
+
+.prose a[href*="wikipedia.org/"] {
+  background-image: var(--icon-wiki);
+}
+
+.prose a[href^="https://github.com/"] {
+  background-image: var(--icon-repo);
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1.2em;
+  padding-left: 1.35em;
+}
+
+.prose li {
+  margin: 0.3em 0;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin: 0.3em 0 0;
+}
+
+.prose ul {
+  list-style: none;
+}
+
+.prose ul > li {
+  position: relative;
+}
+
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.05em;
+  top: 0.66em;
+  width: 0.28em;
+  height: 0.28em;
+  background: var(--muted);
+}
+
+.prose ol > li::marker {
+  color: var(--muted);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.prose h1 {
+  margin: 2em 0 0.6em;
+  font-size: 1.7em;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.prose h2 {
+  margin: 2em 0 0.6em;
+  font-size: 1.42em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.prose h3 {
+  margin: 1.7em 0 0.5em;
+  font-size: 1.14em;
+  font-weight: 600;
+}
+
+.prose h4 {
+  margin: 1.5em 0 0.4em;
+  font-size: 1em;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.prose img,
+.prose video {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose hr {
+  width: 4.5rem;
+  height: 1px;
+  margin: 2.6em auto;
+  border: 0;
+  background: linear-gradient(to right, var(--red) 50%, var(--blue) 50%);
+}
+
+/* 5. Home page sections ---------------------------------------------------- */
+
+/* The first paragraph of the bio is set a little larger. */
+.home .prose > p:first-of-type {
+  font-size: 1.2em;
+  line-height: 1.46;
+}
+
+/* Section headings: a small label followed by a hairline. */
+.home .prose h1,
+.home .prose h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin: 2.8em 0 1.1em;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.home .prose h1::after,
+.home .prose h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* Plain lists on the home page alternate the two players' colours. */
+.home .prose > ul > li::before {
+  background: var(--red);
+}
+
+.home .prose > ul > li:nth-child(even)::before {
+  background: var(--blue);
+}
+
+/* Entry lists. A top-level list whose items each hold a nested list (the
+   projects in index.md) and the generated post list share one layout: a name
+   or date on the left, the description on the right. */
+.home .prose > ul:has(> li > ul),
+.prose .post-list {
+  padding-left: 0;
+}
+
+.home .prose > ul > li:has(> ul),
+.prose .post-list > li {
+  display: grid;
+  grid-template-columns: 6.6em minmax(0, 1fr);
+  column-gap: 1.2em;
+  align-items: baseline;
+  margin: 0 0 0.85em;
+}
+
+.home .prose > ul > li:has(> ul)::before,
+.home .prose > ul > li:has(> ul) > ul > li::before,
+.prose .post-list > li::before {
+  content: none;
+}
+
+/* Keep the name as wide as its text, so its link mark stays next to it. */
+.home .prose > ul > li:has(> ul) > a {
+  justify-self: start;
+}
+
+.home .prose > ul > li:has(> ul) > ul {
+  margin: 0;
+  padding: 0;
+  color: var(--ink-soft);
+  font-size: 0.93em;
+}
+
+.home .prose > ul > li:has(> ul) > ul > li {
+  margin: 0;
+}
+
+.post-list time {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.post-desc {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.93em;
+}
+
+@media (max-width: 30em) {
+  .home .prose > ul > li:has(> ul),
+  .prose .post-list > li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 6. Post pages ------------------------------------------------------------ */
+
+.post-head {
+  margin-bottom: 2.2rem;
+}
+
+.post-head h1 {
+  margin: 0.25em 0 0.3em;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 2.9rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.post-meta {
+  margin: 0;
+  color: var(--muted);
+}
+
+.post-summary {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1.12em;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.prose blockquote {
+  margin: 1.4em 0;
+  padding: 0 0 0 1.1em;
+  border-left: 2px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.prose code,
+.prose kbd,
+.prose pre {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.8em;
+}
+
+.prose :not(pre) > code {
+  padding: 0.1em 0.32em;
+  border-radius: 2px;
+  background: var(--tint);
+}
+
+.prose pre {
+  margin: 1.4em 0;
+  padding: 0.9em 1.1em;
+  overflow-x: auto;
+  border-left: 2px solid var(--rule);
+  background: var(--tint);
+  line-height: 1.5;
+}
+
+.prose pre code {
+  font-size: inherit;
+}
+
+/* Syntax colours for Rouge, the highlighter GitHub Pages uses. */
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cs,
+.highlight .cp {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.highlight .k,
+.highlight .kd,
+.highlight .kn,
+.highlight .kr,
+.highlight .kt,
+.highlight .kc,
+.highlight .nt {
+  color: var(--blue);
+}
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sb,
+.highlight .sc,
+.highlight .se,
+.highlight .m,
+.highlight .mi,
+.highlight .mf {
+  color: var(--red);
+}
+
+.highlight .nf,
+.highlight .nc,
+.highlight .nn {
+  font-weight: 600;
+}
+
+.prose table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.prose th,
+.prose td {
+  padding: 0.4em 0.7em 0.4em 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  border-bottom-color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.prose figure {
+  margin: 1.6em 0;
+}
+
+.prose figcaption,
+.prose .footnotes {
+  color: var(--ink-soft);
+  font-size: 0.86em;
+}
+
+.prose .footnotes {
+  margin-top: 3em;
+  padding-top: 1em;
+  border-top: 1px solid var(--rule);
+}
+
+.prose sup {
+  line-height: 0;
+}
+
+/* 7. Link previews, theme toggle, footer ------------------------------------ */
+
+.preview {
+  position: absolute;
+  z-index: 20;
+  width: min(22rem, calc(100vw - 1.5rem));
+  padding: 0.75rem 0.95rem 0.85rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.preview-source {
+  margin: 0 0 0.3rem;
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.preview-title {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.preview-desc {
+  margin: 0.1rem 0 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.preview-text {
+  display: -webkit-box;
+  margin: 0.45rem 0 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+.preview-thumb {
+  float: right;
+  width: 5.2rem;
+  max-height: 6.5rem;
+  margin: 0.15rem 0 0.4rem 0.8rem;
+  object-fit: cover;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--ink);
+}
+
+/* A half-filled disc. */
+.theme-toggle::before {
+  content: "";
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  background: linear-gradient(to right, currentColor 50%, transparent 50%);
+}
+
+.site-footer {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 4rem 0 3.5rem;
+}
+
+.site-footer span {
+  width: 0.34rem;
+  height: 0.34rem;
+  background: var(--red);
+}
+
+.site-footer span + span {
+  background: var(--blue);
+}
+
+@media (max-width: 40em) {
+  .page {
+    padding: 3.25rem 1rem 0;
+  }
+
+  .arena {
+    height: 12rem;
+  }
+
+  .plate {
+    padding: 0.45rem 0.9rem 0.65rem;
+  }
+
+  .site-nav {
+    gap: 1.2em;
+  }
+
+  .theme-toggle {
+    top: 0.45rem;
+    right: 0.5rem;
+  }
+}

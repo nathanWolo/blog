@@ -1,0 +1,24 @@
+---
+layout: base
+---
+<div class="page home">
+  <header class="masthead">
+    <div class="arena" id="arena">
+      <canvas class="arena-canvas" aria-hidden="true"></canvas>
+      <div class="plate">
+        <h1 class="site-name"><a href="{{ '/' | relative_url }}">{{ site.author | default: site.title | escape }}</a></h1>
+        {% include nav.html %}
+      </div>
+    </div>
+    <p class="arena-caption" hidden>
+      <span class="arena-status" aria-live="polite"></span>
+      <button class="arena-replay" type="button" hidden>Replay</button>
+    </p>
+  </header>
+
+  <main class="prose">
+    {{ content }}
+  </main>
+</div>
+
+<script src="{{ '/assets/js/duel.js' | relative_url }}" defer></script>

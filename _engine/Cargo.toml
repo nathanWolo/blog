@@ -1,0 +1,16 @@
+[package]
+name = "tron_masthead"
+version = "0.1.0"
+edition = "2021"
+description = "The alpha-beta Tron engine from nathanWolo/tron-codingame, built as WebAssembly for the blog's masthead game."
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

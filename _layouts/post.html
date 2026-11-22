@@ -1,0 +1,12 @@
+---
+layout: default
+---
+<article>
+  <header class="post-head">
+    <p class="post-meta"><time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: '%Y-%m-%d' }}</time></p>
+    <h1>{{ page.title | escape }}</h1>
+    {% if page.description %}<p class="post-summary">{{ page.description | escape }}</p>{% endif %}
+  </header>
+
+  {{ content }}
+</article>

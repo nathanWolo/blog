@@ -1,5 +1,8 @@
 title: Nates blog
-description: Nathan Woloshyn is an undergraduate studying mathematics & computer science at the university of victoria, with a focus on machine learning.
+author: Nathan Woloshyn
+github_username: nathanWolo
+permalink: /posts/:title/
+description: Nathan Woloshyn is a software engineer at Amazon who studied mathematics & computer science at the University of Victoria, with a focus on machine learning and AI.
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-modernist
