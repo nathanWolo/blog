@@ -378,12 +378,6 @@ a.site-name {
 
 /* 5. Home page sections ---------------------------------------------------- */
 
-/* The first paragraph of the bio is set a little larger. */
-.home .prose > p:first-of-type {
-  font-size: 1.2em;
-  line-height: 1.46;
-}
-
 /* Section headings: a small label followed by a hairline. */
 .home .prose h1,
 .home .prose h2 {
