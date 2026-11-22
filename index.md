@@ -2,7 +2,7 @@
 layout: home
 ---
 
-Hi! I'm Nathan. I'm currently working as a software engineer for Amazon, and previously worked as a Data Scientist for [Canfor](https://en.wikipedia.org/wiki/Canfor), and studied math and computer science at [UVic](https://en.wikipedia.org/wiki/University_of_Victoria)!
+Hi! I'm Nathan. I'm currently working as a software engineer for Amazon in Vancouver, and previously worked as a Data Scientist for [Canfor](https://en.wikipedia.org/wiki/Canfor), and studied math and computer science at [UVic](https://en.wikipedia.org/wiki/University_of_Victoria)!
 
 I'm interested in applied math, especially machine learning and AI, as well as the impacts it will soon have on our society. 
 
