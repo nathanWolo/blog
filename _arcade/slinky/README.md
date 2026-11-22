@@ -84,3 +84,11 @@ with reuse; the deployed `/az-256` has it on, which never changes the move but m
   `tests/arcade.rs` if you test against the new ones.
 - `bs_smoke.py`-style check: play a game under wasmtime and compare its move list with
   `cargo run --release --example play -- <weights dir> <mode> <snakes> <seed> <sims>`.
+  Under Node, `node ../check_wasm.mjs slinky-moves <mode> <snakes> <seed> <sims>` prints the built
+  file's game in the same form, so `diff` compares the two. (On Windows a whole 542-turn game was
+  identical. `exp` and `tanh` come from the C library, and glibc, mingw and wasi-libc round `tanh`
+  differently in the last bit, so deep into a game a difference need not mean a fault; `update.sh`
+  requires the first 30 turns to be the same.)
+- The arcade-engines workflow does the engine steps with `../update.sh rebuild slinky <checkout>`
+  (see `../README.md`). It cannot refresh the weights, and its pull request says when
+  `engine.rs` or `deploy.sh` changed upstream.

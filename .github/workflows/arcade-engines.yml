@@ -1,0 +1,216 @@
+name: Arcade engines
+
+# Keeps the Arcade's WebAssembly engines (assets/wasm/) in step with their repositories.
+#
+# Once a week, and when started by hand, each engine's repository is compared with the commit the
+# Arcade is built from. An engine whose sources moved is rebuilt with the scripts in _arcade/, and
+# the checks that compare the build with the original engine are run (_arcade/update.sh has the
+# steps, _arcade/README.md describes them). If they all pass, the new build and the new pin are
+# proposed as a pull request from the branch arcade/<engine>; nothing is pushed to the default
+# branch, so the site changes only when that pull request is merged. If anything fails, the job
+# fails, saying where, and no branch or pull request is touched.
+#
+# Two jobs, on purpose. "build" compiles and runs code from the engine repositories and their
+# dependencies, so it can only read this repository and is given no token. What it produces is
+# handed over as a patch. "propose" has the right to push a branch and open a pull request, runs
+# none of that code, and accepts a patch only if it stays inside the engine's own files.
+#
+# Needs, once, in the repository's settings: Actions > General > Workflow permissions >
+# "Allow GitHub Actions to create and approve pull requests".
+#
+# Not covered: the alpha-beta Tron engine (_engine/, a hand port) and the AlphaSlinky weights
+# (assets/wasm/slinky-weights/, which are not in the slinky repository).
+
+on:
+  schedule:
+    - cron: '23 5 * * 1'   # Mondays, 05:23 UTC
+  workflow_dispatch:
+    inputs:
+      engine:
+        description: Engine to look at
+        type: choice
+        default: all
+        options: [all, tronzero, slinky, crossfish, poker]
+      force:
+        description: Rebuild even if upstream has not moved (for example with a newer compiler)
+        type: boolean
+        default: false
+
+permissions: {}           # each job asks for what it needs
+
+concurrency:
+  group: arcade-engines
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  EMSDK_VERSION: 7.0.1    # the Emscripten the C++ engines were built and checked with
+
+jobs:
+  build:
+    name: ${{ matrix.engine }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false    # one engine failing its checks does not hold back the others
+      matrix:
+        engine: ${{ fromJSON((github.event_name != 'workflow_dispatch' || inputs.engine == 'all') && '["tronzero", "slinky", "crossfish", "poker"]' || format('["{0}"]', inputs.engine)) }}
+    env:
+      ENGINE: ${{ matrix.engine }}
+      BRANCH: arcade/${{ matrix.engine }}
+      FORCE: ${{ inputs.force == true }}
+    outputs:              # one per engine: "true" when that engine has an update to propose
+      tronzero: ${{ steps.package.outputs.tronzero }}
+      slinky: ${{ steps.package.outputs.slinky }}
+      crossfish: ${{ steps.package.outputs.crossfish }}
+      poker: ${{ steps.package.outputs.poker }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Compare the pinned commit with upstream
+        id: upstream
+        run: |
+          repo="$(bash _arcade/update.sh repo "$ENGINE")"
+          old="$(bash _arcade/update.sh pinned "$ENGINE")"
+          new="$(git ls-remote "https://github.com/$repo" HEAD | cut -f1)"
+          [ "${#new}" = 40 ] || { echo "::error title=Arcade engines::$ENGINE: could not read the HEAD of $repo"; exit 1; }
+          { echo "repo=$repo"; echo "old=$old"; echo "new=$new"; } >> "$GITHUB_OUTPUT"
+          skip() {
+            echo "moved=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Arcade engines::$ENGINE: $1"
+            echo "- **$ENGINE**: $1" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          }
+
+          if [ "$FORCE" != true ]; then
+            [ "${new#"$old"}" = "$new" ] || skip "$repo is still at the pinned commit ${old:0:7}"
+            # A branch left by an earlier run that already holds a build of this commit stays as it
+            # is, and so does its pull request (delete the branch to have it built again).
+            if git fetch --quiet --depth 1 origin "refs/heads/$BRANCH" 2>/dev/null \
+               && git log -1 --format=%B FETCH_HEAD | grep -qx "Upstream commit: $new"; then
+              skip "the branch $BRANCH already holds a build of $repo at ${new:0:7}"
+            fi
+          fi
+
+          git clone --quiet "https://github.com/$repo" "$RUNNER_TEMP/upstream"
+          git -C "$RUNNER_TEMP/upstream" checkout --quiet --detach "$new"
+          if [ "$FORCE" != true ]; then
+            state="$(bash _arcade/update.sh changed "$ENGINE" "$RUNNER_TEMP/upstream")"
+            [ "$state" = changed ] || skip "$repo moved from ${old:0:7} to ${new:0:7}, but nothing the Arcade builds from changed"
+          fi
+          echo "moved=true" >> "$GITHUB_OUTPUT"
+
+      - name: Rust with the wasm32-wasip1 target
+        if: steps.upstream.outputs.moved == 'true' && (matrix.engine == 'tronzero' || matrix.engine == 'slinky')
+        run: |
+          rustup toolchain install stable --profile minimal --target wasm32-wasip1 --no-self-update
+          rustup default stable
+          rustc --version
+          node --version
+
+      - name: Emscripten
+        if: steps.upstream.outputs.moved == 'true' && (matrix.engine == 'crossfish' || matrix.engine == 'poker')
+        run: |
+          git clone --quiet --depth 1 https://github.com/emscripten-core/emsdk "$RUNNER_TEMP/emsdk"
+          "$RUNNER_TEMP/emsdk/emsdk" install "$EMSDK_VERSION"
+          "$RUNNER_TEMP/emsdk/emsdk" activate "$EMSDK_VERSION"
+          echo "EMSDK=$RUNNER_TEMP/emsdk" >> "$GITHUB_ENV"
+          g++ --version | head -n 1
+
+      - name: Rebuild from upstream and check the result
+        if: steps.upstream.outputs.moved == 'true'
+        run: bash _arcade/update.sh rebuild "$ENGINE" "$RUNNER_TEMP/upstream"
+
+      - name: Package the update for the propose job
+        id: package
+        if: steps.upstream.outputs.moved == 'true'
+        env:
+          REPO: ${{ steps.upstream.outputs.repo }}
+          OLD: ${{ steps.upstream.outputs.old }}
+          NEW: ${{ steps.upstream.outputs.new }}
+        run: |
+          git add -- "_arcade/$ENGINE" "assets/wasm/$ENGINE.wasm"
+          if git diff --cached --quiet; then
+            message="the rebuild from $REPO at ${NEW:0:7} is identical to what is committed, so there is nothing to propose"
+            echo "::notice title=Arcade engines::$ENGINE: $message"
+            echo "- **$ENGINE**: $message" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          out="$RUNNER_TEMP/proposal"
+          mkdir -p "$out"
+          git diff --cached --binary --no-renames > "$out/update.patch"
+          bash _arcade/update.sh notes "$ENGINE" "$RUNNER_TEMP/upstream" "$OLD" > "$out/pr.md"
+          echo "$ENGINE" > "$out/engine"
+          echo "$NEW" > "$out/upstream-commit"
+          echo "$ENGINE=true" >> "$GITHUB_OUTPUT"
+          echo "- **$ENGINE**: rebuilt from $REPO at ${NEW:0:7}, checks passed; handed to the propose job" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        if: steps.package.outputs[matrix.engine] == 'true'
+        with:
+          name: arcade-${{ matrix.engine }}
+          path: ${{ runner.temp }}/proposal
+          if-no-files-found: error
+          retention-days: 7
+
+  propose:
+    name: Open pull requests
+    needs: build
+    # Engines that passed are proposed even when another engine failed its checks.
+    if: ${{ !cancelled() && contains(join(needs.build.outputs.*, ','), 'true') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write         # push the arcade/<engine> branch
+      pull-requests: write    # open or update its pull request
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: arcade-*
+          path: ${{ runner.temp }}/proposals
+
+      - name: Open or update the pull requests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          base="$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)"
+          start="$(git rev-parse HEAD)"
+          status=0
+          while IFS= read -r patch; do
+            dir="$(dirname "$patch")"
+            engine="$(head -n 1 "$dir/engine" | tr -cd 'a-z')"
+            branch="arcade/$engine"
+            git switch --quiet -C "$branch" "$start"
+            git reset --quiet --hard "$start"
+            # Nothing in the folder is run. update.sh (this checkout's own copy) stages the patch
+            # and refuses it if it reaches outside the engine's folder and built file.
+            if ! new="$(bash _arcade/update.sh apply "$engine" "$dir")"; then
+              status=1
+              continue
+            fi
+            repo="$(bash _arcade/update.sh repo "$engine")"
+            title="Arcade: rebuild $engine from $repo at ${new:0:7}"
+            git commit --quiet -m "$title" -m "Upstream commit: $new"
+            git push --quiet --force origin "$branch"
+
+            if [ -n "$(gh pr list --head "$branch" --base "$base" --state open --json number --jq '.[].number')" ]; then
+              gh pr edit "$branch" --title "$title" --body-file "$dir/pr.md"
+            else
+              gh pr create --base "$base" --head "$branch" --title "$title" --body-file "$dir/pr.md"
+            fi
+            url="$(gh pr view "$branch" --json url --jq .url)"
+            echo "- **$engine**: rebuilt from $repo at ${new:0:7}, checks passed: $url" >> "$GITHUB_STEP_SUMMARY"
+          done < <(find "$RUNNER_TEMP/proposals" -name update.patch | sort)
+          exit "$status"

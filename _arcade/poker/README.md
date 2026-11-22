@@ -101,8 +101,14 @@ illegal actions, apply, log). Both are copied next to upstream's code, not edite
 2. Compare the split with upstream: play whole games with bots in every seat through `Engine::run` and through
    `Session::step` (build a small native harness that `#define PK_NO_EXPORTS` and `#include "wasm_api.cpp"`),
    trials-only budget (`ms = 0`), and check the action logs, stacks after every hand and final ranking are identical.
+   `check_split.cpp` is that harness and `./check.sh /path/to/cgpoker` builds and runs it (60 games, natively).
 3. Re-check the JSON against `play/server.py` (`Game.state` / `finish_hand` / `narrate`) if that file changed.
 4. Change `PINNED` in `build.sh` to the new commit, rebuild, commit the new `assets/wasm/poker.wasm`.
+   `node ../check_wasm.mjs poker` plays whole games on the built file under Node (the chips are counted at every step,
+   the offered actions must be accepted and all others refused).
+
+The arcade-engines workflow does steps 1, 2 and 4 with `../update.sh rebuild poker <checkout>` (see `../README.md`);
+step 3 stays a job for a person, and the pull request says when `play/server.py` changed.
 
 ## Notes
 

@@ -76,6 +76,10 @@ wasm engine is identical to the native/CodinGame one.
 2. Prove parity with the repo's own fingerprint: build `cpp_impl/cg_selfcheck.cpp` natively (the Makefile flags) and
    for node (`em++ <same flags as build.sh> -I<checkout>/cpp_impl -I. -include cf_stdlib_shim.hpp cg_selfcheck.cpp
    -o x.js -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=50331648 -sSTACK_SIZE=2097152 -sENVIRONMENT=node`); `120 5`, `120 7`,
-   `120 9`, `120 11` must print identical `nodes=` and `checksum=` lines. Also play a few hundred random games
-   through `cf_legal`/`cf_play` against upstream's `GlobalBoard`.
+   `120 9`, `120 11` must print identical `nodes=` and `checksum=` lines. `./check.sh <checkout>` does exactly this
+   and fails on a difference. Also play a few hundred random games through `cf_legal`/`cf_play` against upstream's
+   `GlobalBoard` (not scripted; `node ../check_wasm.mjs crossfish` plays two games on the built file and checks the
+   moves against `cf_legal` only).
 3. Update `PINNED` in `build.sh` and the commit in this file.
+
+The arcade-engines workflow does steps 1 to 3 with `../update.sh rebuild crossfish <checkout>` (see `../README.md`).
