@@ -1,0 +1,50 @@
+---
+layout: default
+title: Ultimate Tic-Tac-Toe
+description: Play Ultimate Tic-Tac-Toe against crossfish, my engine, in your browser.
+permalink: /arcade/ultimate-tic-tac-toe/
+arcade: true
+---
+<header class="post-head game-head">
+  <p class="post-meta"><a href="{{ '/arcade/' | relative_url }}">Arcade</a></p>
+  <h1>Ultimate Tic-Tac-Toe</h1>
+</header>
+
+<div class="game" id="uttt">
+  <div class="game-options caps">
+    <div class="choice" data-option="first">
+      <span class="choice-label">You play</span>
+      <button type="button" data-value="you" aria-pressed="true">First</button>
+      <button type="button" data-value="engine" aria-pressed="false">Second</button>
+    </div>
+    <div class="choice" data-option="ms">
+      <span class="choice-label">Engine thinks for</span>
+      <button type="button" data-value="100" aria-pressed="false">0.1 s</button>
+      <button type="button" data-value="300" aria-pressed="true">0.3 s</button>
+      <button type="button" data-value="1000" aria-pressed="false">1 s</button>
+    </div>
+  </div>
+
+  <div class="board board-uttt">
+    <div class="uttt-grid" role="grid" aria-label="Ultimate Tic-Tac-Toe board"></div>
+    <div class="board-note" aria-live="polite">
+      <p class="board-note-text">Loading the engine…</p>
+      <button class="board-note-button caps" type="button" hidden>Play again</button>
+    </div>
+  </div>
+
+  <p class="game-status caps">
+    <span class="game-score"></span>
+    <span class="game-readout"></span>
+  </p>
+  <p class="game-turn caps" aria-live="polite"></p>
+
+  <p class="game-actions caps"><button class="game-new" type="button">New game</button></p>
+  <noscript><p>The game needs JavaScript and WebAssembly.</p></noscript>
+</div>
+
+<p>You are red. The big board is nine small games of tic-tac-toe. The cell you play in a small board decides which small board your opponent must play in next: play in a top-right cell, and they must play in the top-right board. If that board is already decided or full, they may play anywhere. The boards you may play in are tinted. Win three small boards in a row to win the game; if nobody manages that, the player who has won more small boards wins.</p>
+
+<p>The opponent is <a href="https://github.com/nathanWolo/crossfish">crossfish</a>, an alpha-beta engine with a small neural network for its evaluation. The engine here is the one written for <a href="https://www.codingame.com/multiplayer/bot-programming/tic-tac-toe">CodinGame's arena</a>, compiled to WebAssembly and running in your browser; the figures under the board are how many moves ahead it looked and how many positions it examined on its last move.</p>
+
+<script src="{{ '/assets/js/arcade/uttt.js' | relative_url }}" defer></script>

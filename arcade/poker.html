@@ -1,0 +1,67 @@
+---
+layout: default
+title: Poker
+description: Play no-limit hold'em against my poker bot in your browser.
+permalink: /arcade/poker/
+arcade: true
+---
+<header class="post-head game-head">
+  <p class="post-meta"><a href="{{ '/arcade/' | relative_url }}">Arcade</a></p>
+  <h1>Poker</h1>
+</header>
+
+<div class="game" id="poker">
+  <div class="game-options caps">
+    <div class="choice" data-option="players">
+      <span class="choice-label">Opponents</span>
+      <button type="button" data-value="2" aria-pressed="true">One</button>
+      <button type="button" data-value="3" aria-pressed="false">Two</button>
+      <button type="button" data-value="4" aria-pressed="false">Three</button>
+    </div>
+    <div class="choice" data-option="speed">
+      <span class="choice-label">Bots act</span>
+      <button type="button" data-value="1200" aria-pressed="false">Slowly</button>
+      <button type="button" data-value="650" aria-pressed="true">Steadily</button>
+      <button type="button" data-value="150" aria-pressed="false">Quickly</button>
+    </div>
+  </div>
+
+  <div class="poker-table">
+    <div class="poker-seats"></div>
+    <div class="poker-middle">
+      <div class="poker-board" aria-label="Board"></div>
+      <p class="poker-pot caps"></p>
+      <p class="poker-banner" aria-live="polite"></p>
+    </div>
+    <div class="poker-seats poker-you"></div>
+    <div class="board-note">
+      <p class="board-note-text">Loading the engine…</p>
+      <button class="board-note-button caps" type="button" hidden>Try again</button>
+    </div>
+  </div>
+
+  <div class="poker-actions"></div>
+
+  <p class="game-status caps">
+    <span class="game-score"></span>
+    <span class="game-readout"></span>
+  </p>
+
+  <section class="poker-panel">
+    <h2 class="caps">Hand log</h2>
+    <div class="poker-log" tabindex="0"></div>
+  </section>
+  <section class="poker-panel">
+    <h2 class="caps poker-thoughts-title">What the bots were thinking</h2>
+    <div class="poker-thoughts"><p class="poker-quiet">Shown after each hand: what each bot decided and why, its estimate of its chances against the hands it put you on and, heads-up, what it has learned about how you play.</p></div>
+  </section>
+
+  <p class="game-actions caps"><button class="game-new" type="button">New game</button></p>
+  <noscript><p>The game needs JavaScript and WebAssembly.</p></noscript>
+</div>
+
+<p>No-limit Texas hold'em as <a href="https://www.codingame.com/multiplayer/bot-programming/poker">CodinGame's poker arena</a> plays it: a sit-and-go for two to four players with 4,800 chips shared equally between them, blinds of 5 and 10 that double every ten hands, and every player's cards shown once a hand is over. One rule is unusual: everyone who is not the big blind posts the small blind, so with four players there are 25 chips in the pot before anyone acts. The game ends when one player has all the chips, or after 600 decisions.</p>
+
+<p>The opponents are copies of the bot from <a href="https://github.com/nathanWolo/cgpoker">cgpoker</a>. Heads-up it plays a precomputed solution of the game before the flop; with more players it follows push-or-fold charts weighted by what each finishing place is worth, and after the flop it estimates its chances against the range of hands it thinks you hold. Both the bot and the game's referee are compiled to WebAssembly and run in your browser. You can use the keyboard: <kbd>F</kbd> to fold, <kbd>C</kbd> to check or call, <kbd>R</kbd> to raise, <kbd>A</kbd> for all-in, and <kbd>Space</kbd> for the next hand.</p>
+
+<script src="{{ '/assets/js/arcade/poker.js' | relative_url }}" defer></script>

@@ -1,0 +1,66 @@
+---
+layout: default
+title: Arcade
+description: Play Tron, Battlesnake, Ultimate Tic-Tac-Toe and poker against the game engines I have written, in your browser.
+permalink: /arcade/
+arcade: true
+---
+<header class="post-head">
+  <h1>Arcade</h1>
+  <p class="post-summary">Play against the game engines I have written.</p>
+</header>
+
+<p>Each engine here is the real one, compiled to WebAssembly. It runs in your browser, so nothing you do is sent to a server, and it thinks only as fast as your device lets it.</p>
+
+<ul class="arcade-list">
+  <li>
+    <a class="arcade-card" href="{{ '/arcade/tron/' | relative_url }}">
+      <svg class="arcade-pic" viewBox="0 0 90 60" aria-hidden="true">
+        <path class="pic-red" d="M9 45h21V24h18v-9"/>
+        <path class="pic-blue" d="M81 15H63v21H48v9"/>
+        <circle class="pic-red-fill" cx="48" cy="15" r="3.4"/>
+        <circle class="pic-blue-fill" cx="48" cy="45" r="3.4"/>
+      </svg>
+      <span class="arcade-name">Tron</span>
+      <span class="arcade-desc">Light cycles on a 30 by 20 grid. Do not hit a wall, and leave the other bike nowhere to go.</span>
+      <span class="arcade-meta">Against tronzero or alpha-beta</span>
+    </a>
+  </li>
+  <li>
+    <a class="arcade-card" href="{{ '/arcade/battlesnake/' | relative_url }}">
+      <svg class="arcade-pic" viewBox="0 0 90 60" aria-hidden="true">
+        <path class="pic-red pic-snake" d="M12 42h12v-9h12v-9h12v-9h15"/>
+        <path class="pic-blue pic-snake" d="M78 45H54v-9H42"/>
+        <circle class="pic-food" cx="24" cy="18" r="2.6"/>
+      </svg>
+      <span class="arcade-name">Battlesnake</span>
+      <span class="arcade-desc">Snake with opponents, on an 11 by 11 board. Outlast them, or meet them head-on when you are the longer one.</span>
+      <span class="arcade-meta">Against AlphaSlinky</span>
+    </a>
+  </li>
+  <li>
+    <a class="arcade-card" href="{{ '/arcade/ultimate-tic-tac-toe/' | relative_url }}">
+      <svg class="arcade-pic" viewBox="0 0 90 60" aria-hidden="true">
+        <path class="pic-rule" d="M37 9v42M53 9v42M24 22h42M24 38h42"/>
+        <path class="pic-red" d="M27 12l6 6m0-6l-6 6M57 28l6 6m0-6l-6 6"/>
+        <circle class="pic-blue" cx="45" cy="15" r="3.6"/>
+        <circle class="pic-blue" cx="45" cy="45" r="3.6"/>
+      </svg>
+      <span class="arcade-name">Ultimate Tic-Tac-Toe</span>
+      <span class="arcade-desc">Nine boards in one: each move decides where the other player goes next.</span>
+      <span class="arcade-meta">Against crossfish</span>
+    </a>
+  </li>
+  <li>
+    <a class="arcade-card" href="{{ '/arcade/poker/' | relative_url }}">
+      <svg class="arcade-pic" viewBox="0 0 90 60" aria-hidden="true">
+        <rect class="pic-rule" x="27" y="12" width="22" height="32" rx="2.5" transform="rotate(-9 38 28)"/>
+        <rect class="pic-card" x="42" y="14" width="22" height="32" rx="2.5" transform="rotate(8 53 30)"/>
+        <path class="pic-red-fill" d="M53 22l5 8-5 8-5-8z" transform="rotate(8 53 30)"/>
+      </svg>
+      <span class="arcade-name">Poker</span>
+      <span class="arcade-desc">No-limit hold'em sit-and-go, against one to three bots.</span>
+      <span class="arcade-meta">Against the cgpoker bot</span>
+    </a>
+  </li>
+</ul>

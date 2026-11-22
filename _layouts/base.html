@@ -25,12 +25,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap">
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    {% if page.arcade %}<link rel="stylesheet" href="{{ '/assets/css/arcade.css' | relative_url }}">{% endif %}
     <link rel="icon" type="image/svg+xml" href="{{ '/assets/images/favicon.svg' | relative_url }}">
 
-    {% if page.layout != 'home' %}
+    {% unless page.layout == 'home' or page.arcade %}
     <!-- LaTeX support on posts and pages. -->
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    {% endif %}
+    {% endunless %}
 
     {% include head-custom.html %}
   </head>

@@ -1,0 +1,58 @@
+{
+  "algorithm": "az_modes",
+  "game_modes": [
+    "standard",
+    "duel",
+    "royale",
+    "constrictor"
+  ],
+  "mode_snakes": [],
+  "max_turns": 1000,
+  "reward": "placement",
+  "features": "all",
+  "hide_constrictor_food": true,
+  "conv_channels": [
+    16,
+    32,
+    32
+  ],
+  "conv_strides": [
+    2,
+    2,
+    1
+  ],
+  "hidden": 256,
+  "compute_dtype": "float32",
+  "lr": 0.001,
+  "cooldown_from": 16777216,
+  "seed": 0,
+  "total_env_steps": 18874368,
+  "snapshot_every": 1048576,
+  "checkpoint_every": 1048576,
+  "eval_games": 0,
+  "eval_opponents": [
+    "random_legal",
+    "heuristic"
+  ],
+  "run_dir": "/root/runs/az-modes-M-s0",
+  "mode_weights": [],
+  "num_envs": 256,
+  "num_steps": 32,
+  "num_simulations": 64,
+  "temperature_turns": 16,
+  "root_noise_frac": 0.25,
+  "root_dirichlet_alpha": 0.5,
+  "c_puct": 0.5,
+  "fpu_reduction": 0.2,
+  "draw_value": -0.5,
+  "buffer_capacity": 262144,
+  "learning_starts": 32768,
+  "batch_size": 512,
+  "replay_ratio": 4.0,
+  "augment": true,
+  "weight_decay": 0.0001,
+  "max_grad_norm": 1.0,
+  "adam_eps": 1e-08,
+  "value_coef": 1.0,
+  "log_every": 32768
+}

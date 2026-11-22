@@ -1,0 +1,28 @@
+[package]
+name = "slinky_arcade"
+version = "0.1.0"
+edition = "2021"
+description = "WebAssembly wrapper around the slinky Battlesnake engine (AlphaSlinky: AlphaZero-style network + PUCT search) for the blog's arcade."
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Upstream, unmodified, pinned. To move to a newer engine change `rev` in all five lines (see README.md).
+slinky-rules  = { git = "https://github.com/nathanWolo/slinky", rev = "f73452d71df0f6ee2ee47372ab1053a399f7b71c" }
+slinky-env    = { git = "https://github.com/nathanWolo/slinky", rev = "f73452d71df0f6ee2ee47372ab1053a399f7b71c" }
+slinky-api    = { git = "https://github.com/nathanWolo/slinky", rev = "f73452d71df0f6ee2ee47372ab1053a399f7b71c" }
+slinky-net    = { git = "https://github.com/nathanWolo/slinky", rev = "f73452d71df0f6ee2ee47372ab1053a399f7b71c" }
+slinky-search = { git = "https://github.com/nathanWolo/slinky", rev = "f73452d71df0f6ee2ee47372ab1053a399f7b71c" }
+serde_json = "1"
+
+# Not part of any parent workspace.
+[workspace]
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true

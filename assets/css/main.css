@@ -712,15 +712,32 @@ a.site-name {
   }
 
   .plate {
-    padding: 0.45rem 0.9rem 0.65rem;
+    padding: 0.45rem 0.6rem 0.65rem;
   }
 
   .site-nav {
     gap: 1.2em;
   }
 
+  /* The plate is a wall in the masthead game, so on a narrow screen its
+     navigation is set tighter, to leave the bikes a way round each side. */
+  .plate .site-nav {
+    gap: 0.9em;
+    font-size: 0.64em;
+    letter-spacing: 0.07em;
+  }
+
   .theme-toggle {
     top: 0.45rem;
     right: 0.5rem;
+  }
+}
+
+/* On the narrowest screens the plate's navigation goes onto two rows. */
+@media (max-width: 22.5em) {
+  .plate .site-nav {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.15em 1.6em;
   }
 }

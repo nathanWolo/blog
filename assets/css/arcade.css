@@ -1,0 +1,839 @@
+/*
+ * Styles for the arcade: the list of games and the game pages. Loaded only on
+ * pages with `arcade: true` in their front matter, after main.css, whose
+ * colour tokens it uses.
+ */
+
+/* Two more player colours, for games with more than two sides. As in
+   main.css, the dark values appear once for a dark system and once for a
+   visitor who chose dark with the toggle. */
+:root {
+  --green: #4c7a3d;
+  --gold: #a8741a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --green: #93bf7e;
+    --gold: #dcab57;
+  }
+}
+
+:root[data-theme="dark"] {
+  --green: #93bf7e;
+  --gold: #dcab57;
+}
+
+/* Small tracked capitals, as main.css uses for navigation and captions. */
+.caps,
+.arcade-meta {
+  font-size: 0.68em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.post-meta a {
+  text-decoration: none;
+}
+
+.post-meta a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.3em;
+}
+
+.is-red {
+  color: var(--red);
+}
+
+.is-blue {
+  color: var(--blue);
+}
+
+/* The list of games ---------------------------------------------------------- */
+
+.prose .arcade-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 2rem 0 0;
+  padding: 0;
+}
+
+.prose .arcade-list > li {
+  margin: 0;
+}
+
+.prose .arcade-list > li::before {
+  content: none;
+}
+
+.prose .arcade-card {
+  display: block;
+  height: 100%;
+  padding: 0.9rem 1.1rem 1.05rem;
+  border: 1px solid var(--rule);
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose a.arcade-card:hover {
+  border-color: var(--ink-soft);
+}
+
+.arcade-pic {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 0.7rem;
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pic-snake { stroke-width: 5; }
+.pic-red { stroke: var(--red); }
+.pic-blue { stroke: var(--blue); }
+.pic-rule { stroke: var(--muted); stroke-width: 1.4; }
+.pic-card { stroke: var(--muted); stroke-width: 1.4; fill: var(--paper); }
+.pic-red-fill { fill: var(--red); }
+.pic-blue-fill { fill: var(--blue); }
+.pic-food { fill: var(--muted); }
+
+.arcade-name {
+  display: block;
+  font-size: 1.2em;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.arcade-desc {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--ink-soft);
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.arcade-meta {
+  display: block;
+  margin-top: 0.7rem;
+  color: var(--muted);
+}
+
+@media (max-width: 30em) {
+  .prose .arcade-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A game ----------------------------------------------------------------------- */
+
+/* The heading of a game page is kept short, so the board starts high up. */
+.game-head {
+  margin-bottom: 1.3rem;
+}
+
+.game-head h1 {
+  font-size: clamp(1.7rem, 1.3rem + 1.8vw, 2.3rem);
+}
+
+.game {
+  margin: 0 0 2.2rem;
+}
+
+.game-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 2rem;
+  margin-bottom: 0.7rem;
+  color: var(--muted);
+}
+
+.choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 1.1em;
+}
+
+.choice[hidden] {
+  display: none;
+}
+
+.choice-label {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.choice button {
+  padding: 0.2em 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.choice button:hover {
+  color: var(--ink);
+}
+
+.choice button[aria-pressed="true"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.35em;
+}
+
+/* The board is a canvas; a note sits over its middle between games. */
+.board {
+  position: relative;
+  border: 1px solid var(--ink-soft);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.board-tron {
+  aspect-ratio: 3 / 2;
+}
+
+/* A square board, kept small enough to fit on the screen with its controls. */
+.board-snake {
+  aspect-ratio: 1;
+  width: min(100%, 28rem, max(15rem, 100vh - 17rem));
+  margin: 0 auto;
+  border: 0;
+}
+
+.board canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.board-note {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: calc(100% - 2rem);
+  padding: 0.6rem 1.3rem 0.75rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  text-align: center;
+}
+
+.board-note[hidden],
+.board-note-button[hidden] {
+  display: none;
+}
+
+.prose .board-note-text {
+  margin: 0;
+}
+
+.board-note-button {
+  margin-top: 0.45rem;
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--ink-soft);
+  background: none;
+  color: var(--ink);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.board-note-button:hover {
+  border-color: var(--red);
+}
+
+.prose .game-status {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  min-height: 1.6em;
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+}
+
+/* On a narrow screen the score and the readout each keep to one line, one
+   above the other, instead of both breaking in the middle. */
+.game-status > span {
+  white-space: nowrap;
+}
+
+/* Ultimate Tic-Tac-Toe: nine small boards of nine buttons each. The marks
+   are drawn with pseudo-elements in the mark's colour. */
+.board-uttt {
+  aspect-ratio: 1;
+  width: min(100%, 28rem, max(15rem, 100vh - 18rem));
+  margin: 0 auto;
+  border: 0;
+  touch-action: manipulation;
+}
+
+.uttt-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.uttt-small {
+  position: relative;
+  padding: 7%;
+}
+
+.uttt-small:not(:nth-child(3n)) {
+  border-right: 2px solid var(--ink-soft);
+}
+
+.uttt-small:nth-child(-n + 6) {
+  border-bottom: 2px solid var(--ink-soft);
+}
+
+/* A board the visitor may play in. */
+.uttt-small.is-open {
+  background: var(--tint);
+}
+
+.uttt-cells {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.uttt-cell {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+}
+
+.uttt-cell:not(:nth-child(3n)) {
+  border-right: 1px solid var(--rule);
+}
+
+.uttt-cell:nth-child(-n + 6) {
+  border-bottom: 1px solid var(--rule);
+}
+
+.uttt-small.is-open .uttt-cell:not(:nth-child(3n)),
+.uttt-small.is-open .uttt-cell:nth-child(-n + 6) {
+  border-color: color-mix(in srgb, var(--muted) 45%, transparent);
+}
+
+.uttt-cell:not(:disabled) {
+  cursor: pointer;
+}
+
+.uttt-cell:not(:disabled):hover,
+.uttt-cell:not(:disabled):focus-visible {
+  background: color-mix(in srgb, var(--red) 16%, transparent);
+}
+
+.uttt-cell.is-red,
+.uttt-small.is-red {
+  color: var(--red);
+}
+
+.uttt-cell.is-blue,
+.uttt-small.is-blue {
+  color: var(--blue);
+}
+
+.uttt-cell.is-last {
+  background: color-mix(in srgb, currentColor 17%, transparent);
+}
+
+.uttt-cell.is-x::before,
+.uttt-cell.is-x::after,
+.uttt-small.is-won.is-x::before,
+.uttt-small.is-won.is-x::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 66%;
+  height: 0.15rem;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.uttt-cell.is-x::after,
+.uttt-small.is-won.is-x::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.uttt-cell.is-o::before,
+.uttt-small.is-won.is-o::before {
+  content: "";
+  position: absolute;
+  inset: 21%;
+  border: 0.15rem solid currentColor;
+  border-radius: 50%;
+}
+
+/* A small board that has been won shows the winner's mark across it. */
+.uttt-small.is-won.is-x::before,
+.uttt-small.is-won.is-x::after {
+  width: 78%;
+  height: 0.34rem;
+}
+
+.uttt-small.is-won.is-o::before {
+  inset: 13%;
+  border-width: 0.34rem;
+}
+
+.uttt-small.is-won .uttt-cells {
+  opacity: 0.2;
+}
+
+.uttt-small.is-drawn .uttt-cells {
+  opacity: 0.4;
+}
+
+.prose .game-turn {
+  min-height: 1.6em;
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.prose .game-turn.is-result {
+  color: var(--ink);
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Poker: the other players along the top, the board and the pot in the
+   middle, the visitor's seat at the bottom, then the action buttons. */
+.poker-table {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+  padding: 0.9rem 0.6rem 0.7rem;
+  border: 1px solid var(--rule);
+}
+
+.poker-seats {
+  display: flex;
+  justify-content: space-around;
+  gap: 0.5rem;
+  min-height: 9.2rem;
+}
+
+.poker-seat {
+  flex: 0 1 10rem;
+  min-width: 0;
+  padding-bottom: 0.2rem;
+  border-bottom: 2px solid transparent;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.poker-seat.is-acting {
+  border-bottom-color: var(--ink);
+}
+
+.poker-seat.is-folded {
+  opacity: 0.5;
+}
+
+.poker-seat.is-out {
+  opacity: 0.3;
+}
+
+.poker-cards,
+.poker-board {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.poker-cards {
+  min-height: 3.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.pcard {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 3.2rem;
+  border: 1px solid var(--muted);
+  border-radius: 3px;
+  background: var(--tint);
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+.poker-board .pcard {
+  width: 2.6rem;
+  height: 3.6rem;
+}
+
+.pcard.is-red {
+  color: var(--red);
+}
+
+.pcard-rank {
+  font-size: 1.05rem;
+}
+
+.pcard-suit {
+  margin-top: 0.12rem;
+  font-size: 0.95rem;
+}
+
+.pcard.is-back {
+  background: repeating-linear-gradient(45deg, var(--tint) 0 4px, var(--rule) 4px 8px);
+}
+
+.pcard.is-empty {
+  border-style: dashed;
+  border-color: var(--rule);
+  background: none;
+}
+
+.poker-name {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.4em;
+  font-weight: 500;
+}
+
+.poker-badge {
+  padding: 0 0.35em;
+  border: 1px solid var(--muted);
+  border-radius: 2px;
+  color: var(--ink-soft);
+  font-size: 0.6em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.poker-stack {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.poker-stack small {
+  color: var(--muted);
+  font-size: 0.75em;
+}
+
+.poker-said,
+.poker-bet {
+  color: var(--muted);
+}
+
+.poker-seat.is-acting .poker-said {
+  color: var(--ink);
+}
+
+.poker-middle {
+  text-align: center;
+}
+
+.prose .poker-pot {
+  margin: 0.5rem 0 0;
+  color: var(--ink-soft);
+}
+
+.prose .poker-banner {
+  min-height: 1.6em;
+  margin: 0.2rem 0 0;
+  font-style: italic;
+}
+
+.poker-actions {
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+  min-height: 6.6rem;
+  margin-top: 0.9rem;
+}
+
+.poker-row,
+.poker-raise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.poker-button {
+  padding: 0.35em 0.9em;
+  border: 1px solid var(--ink-soft);
+  border-radius: 2px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.92em;
+  cursor: pointer;
+}
+
+.poker-button:hover {
+  border-color: var(--red);
+}
+
+.poker-button.is-main {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.prose .poker-button kbd {
+  margin-left: 0.7em;
+  font-size: 0.68em;
+  opacity: 0.6;
+}
+
+.poker-raise input[type="range"] {
+  flex: 1 1 8rem;
+  min-width: 0;
+  accent-color: var(--red);
+}
+
+.poker-raise input[type="number"] {
+  width: 5.6em;
+  padding: 0.3em 0.4em;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.92em;
+}
+
+.poker-presets {
+  gap: 0.2rem 1.1em;
+  color: var(--muted);
+}
+
+.poker-presets button {
+  padding: 0.2em 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.poker-presets button:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.3em;
+}
+
+.poker-presets .poker-quiet {
+  color: var(--ink-soft);
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.poker-quiet,
+.prose .poker-quiet {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92em;
+}
+
+.poker-panel {
+  margin-top: 1.5rem;
+}
+
+.prose .poker-panel h2 {
+  margin: 0 0 0.5rem;
+  color: var(--ink-soft);
+  font-size: 0.68em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.poker-log,
+.poker-thoughts {
+  font-size: 0.88em;
+  line-height: 1.45;
+}
+
+.poker-log {
+  max-height: 11rem;
+  padding-left: 0.8rem;
+  overflow-y: auto;
+  border-left: 2px solid var(--rule);
+}
+
+.poker-log .is-hand {
+  margin-top: 0.5em;
+  color: var(--muted);
+}
+
+.poker-log .is-hand:first-child {
+  margin-top: 0;
+}
+
+.poker-log .is-street {
+  color: var(--blue);
+}
+
+.poker-log .is-result {
+  font-style: italic;
+}
+
+.poker-thought {
+  padding: 0.3em 0;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.poker-thought:last-child {
+  border-bottom: 0;
+}
+
+.poker-read {
+  margin-top: 0.15em;
+  color: var(--muted);
+}
+
+/* Battlesnake: one entry per snake, with its length and a health bar. */
+.snake-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: 0.6rem 1.2rem;
+  margin-top: 0.9rem;
+  color: var(--muted);
+}
+
+.snake-tag {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 0.6em;
+  align-items: baseline;
+}
+
+.snake-0 { --snake: var(--red); }
+.snake-1 { --snake: var(--blue); }
+.snake-2 { --snake: var(--green); }
+.snake-3 { --snake: var(--gold); }
+
+.snake-name {
+  color: var(--snake);
+}
+
+.snake-health {
+  grid-column: 1 / -1;
+  height: 3px;
+  margin-top: 0.25rem;
+  background: var(--rule);
+}
+
+.snake-health span {
+  display: block;
+  height: 100%;
+  background: var(--snake);
+}
+
+.snake-tag.is-out .snake-name {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.prose .game-actions {
+  margin: 0.9rem 0 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+.game-new {
+  padding: 0.2em 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.game-new:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.3em;
+}
+
+/* Steering buttons, for screens without a keyboard. */
+.dpad {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 3.6rem);
+    grid-template-rows: repeat(2, 3.6rem);
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    touch-action: none;
+  }
+}
+
+.dpad button {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dpad button:active {
+  background: var(--tint);
+}
+
+/* An arrowhead, turned to point the button's way. */
+.dpad button::before {
+  content: "";
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin: 0 auto;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+}
+
+.dpad button[data-dir="0"] { grid-column: 2; grid-row: 1; }
+.dpad button[data-dir="2"] { grid-column: 1; grid-row: 2; }
+.dpad button[data-dir="1"] { grid-column: 2; grid-row: 2; }
+.dpad button[data-dir="3"] { grid-column: 3; grid-row: 2; }
+
+.dpad button[data-dir="0"]::before { transform: translateY(25%) rotate(45deg); }
+.dpad button[data-dir="1"]::before { transform: translateY(-25%) rotate(225deg); }
+.dpad button[data-dir="2"]::before { transform: translateX(25%) rotate(-45deg); }
+.dpad button[data-dir="3"]::before { transform: translateX(-25%) rotate(135deg); }

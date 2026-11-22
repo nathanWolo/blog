@@ -1,0 +1,54 @@
+---
+layout: default
+title: Tron
+description: Play Tron against my Tron engine in your browser.
+permalink: /arcade/tron/
+arcade: true
+---
+<header class="post-head game-head">
+  <p class="post-meta"><a href="{{ '/arcade/' | relative_url }}">Arcade</a></p>
+  <h1>Tron</h1>
+</header>
+
+<div class="game" id="tron">
+  <div class="game-options caps">
+    <div class="choice" data-option="engine">
+      <span class="choice-label">Opponent</span>
+      <button type="button" data-value="zero" aria-pressed="true">tronzero</button>
+      <button type="button" data-value="ab" aria-pressed="false">alpha-beta</button>
+    </div>
+    <div class="choice" data-option="speed">
+      <span class="choice-label">Speed</span>
+      <button type="button" data-value="slow" aria-pressed="false">Slow</button>
+      <button type="button" data-value="normal" aria-pressed="true">Normal</button>
+      <button type="button" data-value="fast" aria-pressed="false">Fast</button>
+    </div>
+  </div>
+
+  <div class="board board-tron">
+    <canvas aria-label="Tron board"></canvas>
+    <div class="board-note" aria-live="polite">
+      <p class="board-note-text">Loading the engine…</p>
+      <button class="board-note-button caps" type="button" hidden>Play again</button>
+    </div>
+  </div>
+
+  <p class="game-status caps">
+    <span class="game-score"></span>
+    <span class="game-readout"></span>
+  </p>
+
+  <div class="dpad" aria-label="Steering">
+    <button type="button" data-dir="0" aria-label="Up"></button>
+    <button type="button" data-dir="2" aria-label="Left"></button>
+    <button type="button" data-dir="1" aria-label="Down"></button>
+    <button type="button" data-dir="3" aria-label="Right"></button>
+  </div>
+  <noscript><p>The game needs JavaScript and WebAssembly.</p></noscript>
+</div>
+
+<p>You are red. Steer with the arrow keys or <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>; on a phone, swipe on the board or use the buttons under it. Every bike leaves a wall behind it and moves one cell per turn, red first. Run into a wall and you lose. The dots show which bike can reach each cell first.</p>
+
+<p>Both opponents come from <a href="https://github.com/nathanWolo/tron-codingame">tron-codingame</a>. <em>tronzero</em> is the newer one: an AlphaZero-style agent, a small neural network guiding a tree search. <em>alpha-beta</em> is its predecessor, a classical search with a hand-written evaluation, and the engine that plays itself at the top of the <a href="{{ '/' | relative_url }}">home page</a>. Each is compiled to WebAssembly and runs in your browser, thinking for most of every turn; the figure under the board is how many positions tronzero tried, or how many moves ahead alpha-beta looked, on its last move.</p>
+
+<script src="{{ '/assets/js/arcade/tron.js' | relative_url }}" defer></script>
