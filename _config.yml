@@ -3,6 +3,6 @@ author: Nathan Woloshyn
 github_username: nathanWolo
 permalink: /posts/:title/
 description: Nathan Woloshyn is a software engineer at Amazon who studied mathematics & computer science at the University of Victoria, with a focus on machine learning and AI.
-show_downloads: true
 google_analytics:
-theme: jekyll-theme-modernist
+# The site has its own layouts and stylesheet, so no gem theme is loaded.
+theme: null
